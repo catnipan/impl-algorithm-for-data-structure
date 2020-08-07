@@ -1,5 +1,5 @@
 [package]
-name = "impl-algorithm-for-data-structure"
+name = "impl_algorithm_for_data_structure"
 version = "0.1.0"
 authors = ["Yifan Pan <4anpan@gmail.com>"]
 edition = "2018"
