@@ -182,8 +182,20 @@ mod tests {
     assert_eq!(Some(1..6), iter_max.next());
     assert_eq!(None, iter_max.next());
 
-    assert!(!m.is_palindrome(0, 2));
-    assert!(m.is_palindrome(1, 4));
+    assert_eq!(0..1, m.odd_longest_at(0));
+    assert_eq!(1..2, m.odd_longest_at(1));
+    assert_eq!(1..4, m.odd_longest_at(2));
+    assert_eq!(1..6, m.odd_longest_at(3));
+    assert_eq!(3..6, m.odd_longest_at(4));
+    assert_eq!(5..6, m.odd_longest_at(5));
+    assert_eq!(6..7, m.odd_longest_at(6));
+
+    assert_eq!(1..1, m.even_longest_at(0,1));
+    assert_eq!(2..2, m.even_longest_at(1,2));
+    assert_eq!(3..3, m.even_longest_at(2,3));
+    assert_eq!(4..4, m.even_longest_at(3,4));
+    assert_eq!(5..5, m.even_longest_at(4,5));
+    assert_eq!(6..6, m.even_longest_at(5,6));
 
     assert!(match_naive(s.as_bytes(), &m));
   }
@@ -216,5 +228,26 @@ mod tests {
     assert_eq!(None, iter_max.next());
 
     assert!(match_naive(&s, &m));
+
+    let mut iter_len_3 = m.iter_of_len(3);
+    assert_eq!(Some(3..6), iter_len_3.next());
+    assert_eq!(Some(13..16), iter_len_3.next());
+    assert_eq!(Some(23..26), iter_len_3.next());
+    assert_eq!(Some(33..36), iter_len_3.next());
+    assert_eq!(None, iter_len_3.next());
+
+    let mut iter_len_5 = m.iter_of_len(5);
+    assert_eq!(Some(2..7), iter_len_5.next());
+    assert_eq!(Some(12..17), iter_len_5.next());
+    assert_eq!(Some(22..27), iter_len_5.next());
+    assert_eq!(Some(32..37), iter_len_5.next());
+    assert_eq!(None, iter_len_5.next());
+
+    let mut iter_len_7 = m.iter_of_len(7);
+    assert_eq!(Some(1..8), iter_len_7.next());
+    assert_eq!(Some(11..18), iter_len_7.next());
+    assert_eq!(Some(21..28), iter_len_7.next());
+    assert_eq!(Some(31..38), iter_len_7.next());
+    assert_eq!(None, iter_len_7.next());
   }
 }
