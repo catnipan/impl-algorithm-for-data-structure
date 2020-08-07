@@ -1,0 +1,1 @@
+# impl Algorithm for DataStructure
