@@ -33,14 +33,14 @@ impl<K: Eq + Hash + Copy, U: Default + Clone> Trie<K, U> {
   pub fn insert(&self, mut path: impl Iterator<Item = K>, data: U) {
     let mut cursor = self.cursor();
     while let Some(k) = path.next() {
-      cursor = cursor.to_child_or_insert_default(k);
+      cursor = cursor.child_or_insert_default(k);
     }
     cursor.set_data(data);
   }
   pub fn get(&self, mut path: impl Iterator<Item = K>) -> Option<U> {
     let mut cursor = self.cursor();
     while let Some(k) = path.next() {
-      match cursor.to_child(&k) {
+      match cursor.child(&k) {
         Some(next_cursor) => cursor = next_cursor,
         None => return None,
       }
@@ -51,15 +51,15 @@ impl<K: Eq + Hash + Copy, U: Default + Clone> Trie<K, U> {
 
 pub struct TrieCursor<K, U>(Rc<RefCell<TrieNode<K, U>>>);
 impl<K: Eq + Hash + Copy, U: Default + Clone> TrieCursor<K, U> {
-  fn to_child_or_insert_default(&self, k: K) -> TrieCursor<K, U> {
-    self.init_child(k);
-    self.to_child(&k).unwrap()
+  fn child_or_insert_default(&self, k: K) -> TrieCursor<K, U> {
+    let mut node = self.0.borrow_mut();
+    let entry = node.child
+      .entry(k)
+      .or_insert(Rc::new(RefCell::new(TrieNode::new())));  // init child
+    TrieCursor(entry.clone())
   }
-  pub fn to_child(&self, k: &K) -> Option<TrieCursor<K, U>> {
+  pub fn child(&self, k: &K) -> Option<TrieCursor<K, U>> {
     self.0.borrow().child.get(k).map(|c| TrieCursor(Rc::clone(c)))
-  }
-  fn init_child(&self, key: K) {
-    self.0.borrow_mut().child.entry(key).or_insert(Rc::new(RefCell::new(TrieNode::new())));
   }
   pub fn set_data(&self, data: U) {
     self.0.borrow_mut().data = data;
